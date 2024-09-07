@@ -47,8 +47,6 @@ public class Actor : MonoBehaviour
     }
     private void ThrowSlipper()
     {
-
-
         GameObject InstantiatedSlipper = Instantiate(SlipperGameObject, projectileSpawnPoint.position, Quaternion.identity);
         InstantiatedSlipper.TryGetComponent(out Rigidbody slipperRigidbody);
         slipperRigidbody.AddForce(transform.forward * ProjectileForce, ForceMode.Impulse);
