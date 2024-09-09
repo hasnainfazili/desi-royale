@@ -10,12 +10,16 @@ public class ThrowController : MonoBehaviour
     [SerializeField] private Rigidbody currentThrowableEquipped;
     [SerializeField] private bool IsThrowAvailable = true;
     [SerializeField] private float ThrowDelay;
-    
+    [SerializeField] private AudioClip ThrowAudioClip;
     [SerializeField] private float ThrowStrength = 10f; 
     [SerializeField] private Transform _releaseTransform;
+
+    //Reference to LineRenderer
     [Header("Line Renderer Display Settings")]
     [SerializeField] 
     private LineRenderer _lineRenderer;
+    //Number of Points Created for the lineRenderer 
+    //More points lead to smoother curve
     [SerializeField]
     [Range(10,100)]
     private int LinePoints;
@@ -101,6 +105,7 @@ public class ThrowController : MonoBehaviour
         }
     }
 
+    //Function called by the Animation Event to throw the object
     private void ReleaseThrowable()
     {
         currentThrowableEquipped.velocity = Vector3.zero;
@@ -109,8 +114,11 @@ public class ThrowController : MonoBehaviour
         currentThrowableEquipped.freezeRotation = false;
         currentThrowableEquipped.transform.SetParent(null, true);
         currentThrowableEquipped.AddForce(Camera.main.transform.forward * ThrowStrength, ForceMode.Impulse);
+
+        SoundFXManager.instance.PlaySingleSoundFXClip(ThrowAudioClip, transform, 1f);
         StartCoroutine(ResetThrowable());
     }
+    //Coroutine resets the transform, rotation, and bools of the throwable
     private IEnumerator ResetThrowable()
     {
         yield return new WaitForSeconds(ThrowDelay);

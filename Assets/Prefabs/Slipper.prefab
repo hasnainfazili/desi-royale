@@ -76,6 +76,8 @@ MonoBehaviour:
   x: 0.1
   y: 0.1
   z: 0.1
+  hitImpact: {fileID: 141433446842962269, guid: 9fe8f8b3288e45a44af36ff8aa04486e,
+    type: 3}
 --- !u!1001 &621300099907991342
 PrefabInstance:
   m_ObjectHideFlags: 0
