@@ -30,14 +30,19 @@ public class ThrowController : MonoBehaviour
     private Quaternion InitialRotation;
     private void Awake()
     {
+        _animator = GetComponent<Animator>();
+
+
+        //Setting the reset position of the Throwable back to default for pooling
         InitialParent = currentThrowableEquipped.transform.parent;
         InitialRotation = currentThrowableEquipped.transform.localRotation;
         InitialLocalPosition = currentThrowableEquipped.transform.localPosition;
         currentThrowableEquipped.freezeRotation = true;
-        _animator = GetComponent<Animator>();
     }
     private void Update()
     {
+
+        //If Right MB is pressed Allow the player to aim
         if (Application.isFocused && Mouse.current.rightButton.isPressed)
         {
             _animator.transform.rotation = Quaternion.Euler(
@@ -45,12 +50,14 @@ public class ThrowController : MonoBehaviour
                 Camera.main.transform.rotation.eulerAngles.y,
                 _animator.transform.eulerAngles.z
             );
-
+            // Draw the Trajectory of the object.
             DrawProjection();
-
+            
             if (Mouse.current.leftButton.wasReleasedThisFrame && IsThrowAvailable)
             {
+                //Set Throws to false 
                 IsThrowAvailable = false;
+                //Triggers the Throw Animation to Player
                 _animator.SetTrigger("Throw Object");
             }
         }
