@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CinemachineTarget
   - FxTemporaire
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
+  - Enemy
+  - Cover
   - 
   - 
   - 
