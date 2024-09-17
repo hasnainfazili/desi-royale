@@ -1,7 +1,3 @@
-Here's the updated README with the slipper-throwing mechanic and emphasis on capturing the thrill of an angered parent:
-
----
-
 # Desi Royale
 
 **Desi Royale** is a multiplayer survival game rooted in childhood nostalgia, where players relive the thrill, excitement, and fear of trying to finish their chores while evading an angered parent. Inspired by *Dead by Daylight* and everyday childhood experiences, this unique game pits two teams—*children* versus *mothers*—against each other in a frantic battle of wits and speed.
@@ -73,6 +69,3 @@ We welcome contributions! Please feel free to submit pull requests, report issue
 For questions, bug reports, or feedback, reach out via gamedev.hasnain@gmail.com or open an issue in the repository.
 Twitter/X: x.com/mediocreGameDev
 Twitch: twitch.tv/mediocreGameDev
----
-
-Let me know if you'd like any further changes or additions!
