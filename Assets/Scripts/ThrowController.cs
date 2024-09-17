@@ -69,13 +69,6 @@ public class ThrowController : MonoBehaviour
         {
             _lineRenderer.enabled = false;
         }
-
-        // if(Input.GetButtonDown("Fire2") && IsThrowAvailable)
-        // {
-        //     IsThrowAvailable = false;
-        //     DrawProjection();
-        //     _animator.SetTrigger("Throw Object");
-        // }
     }
     private void DrawProjection()
     {
@@ -115,7 +108,7 @@ public class ThrowController : MonoBehaviour
         currentThrowableEquipped.transform.SetParent(null, true);
         currentThrowableEquipped.AddForce(Camera.main.transform.forward * ThrowStrength, ForceMode.Impulse);
 
-        SoundFXManager.instance.PlaySingleSoundFXClip(ThrowAudioClip, transform, 1f);
+        SoundFXManager.instance.PlaySingleSoundFXClip(ThrowAudioClip, transform, .4f);
         StartCoroutine(ResetThrowable());
     }
     //Coroutine resets the transform, rotation, and bools of the throwable

@@ -13,14 +13,18 @@ public class LineOfSight : MonoBehaviour
     //The Angle or the FoV of the enemy actor
     [Range(0,360)]
     public float _fieldOfView;
-
+    Actor _actor;
     [SerializeField] private LayerMask obstacleMask;
     [SerializeField] private LayerMask targetMask;
     public List<Transform> InViewingRange = new List<Transform>();
-
+    void Awake()
+    {
+        _actor = GetComponent<Actor>();
+    }
     void Update()
     {
         FindVisibleTargets();
+        
     }
 
     private void FindVisibleTargets()
@@ -40,6 +44,14 @@ public class LineOfSight : MonoBehaviour
                 {
                     InViewingRange.Add(target);
                     Debug.Log(target.name);
+                    if(target.CompareTag("Player"))
+                    {
+                        _actor.playerInFOV = true;
+                    } 
+                    else
+                    {
+                        _actor.playerInFOV = false;
+                    } 
                 }
             }
 
