@@ -8,13 +8,21 @@ public class PatrolState : BaseState
 
     public override void OnEnter()
     {
-        _animator.CrossFadeInFixedTime("Patrol", 0.1f);
+        Debug.Log(_actor.name + " is patrolling");
+    }
+
+    public override void Update()
+    {
+        base.Update();
     }
 
     public override void FixedUpdate()
     {
         _actor.Patrol();
     }
-    
-    
+
+    public override void OnExit()
+    {
+        base.OnExit();
+    }
 }

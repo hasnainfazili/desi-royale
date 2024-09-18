@@ -43,15 +43,7 @@ public class LineOfSight : MonoBehaviour
                 if(!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstacleMask))
                 {
                     InViewingRange.Add(target);
-                    Debug.Log(target.name);
-                    if(target.CompareTag("Player"))
-                    {
-                        _actor.playerInFOV = true;
-                    } 
-                    else
-                    {
-                        _actor.playerInFOV = false;
-                    } 
+                    _actor.playerInFOV = target.CompareTag("Player");
                 }
             }
 

@@ -99,6 +99,7 @@ public class ThrowController : MonoBehaviour
     }
 
     //Function called by the Animation Event to throw the object
+   
     private void ReleaseThrowable()
     {
         currentThrowableEquipped.velocity = Vector3.zero;

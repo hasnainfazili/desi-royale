@@ -7,10 +7,13 @@ public class HostileState : BaseState
 
     public override void OnEnter()
     {
-        _animator.CrossFadeInFixedTime("Hostile", 0.1f);
+        Debug.Log(_actor.name + " is hostile");
     }
-    
-    public override void FixedUpdate() { }
+
+    public override void FixedUpdate()
+    {
+        _actor.Hostile();
+    }
     public override void Update() { }
     
     public override void OnExit() { }
