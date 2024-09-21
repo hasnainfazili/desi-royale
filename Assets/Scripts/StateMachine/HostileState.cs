@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.AI;
 
 public class HostileState : BaseState
 {
@@ -7,14 +6,24 @@ public class HostileState : BaseState
 
     public override void OnEnter()
     {
-        Debug.Log(_actor.name + " is hostile");
+        
     }
 
     public override void FixedUpdate()
     {
-        _actor.Hostile();
+        Debug.Log("Hostile");
     }
-    public override void Update() { }
+
+    public override void Update()
+    {
+        
+
+    }
+
+    public override void OnExit()
+    {
+        
+    }
     
-    public override void OnExit() { }
+    
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.PlayerLoop;
 
 public class StateMachine
@@ -8,14 +9,16 @@ public class StateMachine
     StateNode _current;
     readonly Dictionary<Type, StateNode> _nodes = new();
     readonly HashSet<ITransition> _anyTransitions = new();
-
+    private bool transitionComplete = false;
     public void Update()
     {
         var transition = GetTransition();
-        if(transition != null)
+        if(transition != null && !transitionComplete)
             ChangeState(transition.To);
         
-        _current.State?.Update();
+        _current.State?.Update();            
+        Debug.Log(_current.State);
+
     }
 
     public void FixedUpdate()
@@ -31,13 +34,17 @@ public class StateMachine
 
     void ChangeState(IState state)
     {
-        if(state == _current.State) return;
+        if (state != _current.State)
+
+        {
+            var previousState = _current.State;
+            var nextState = _nodes[state.GetType()].State;
         
-        var previousState = _current.State;
-        var nextState = _nodes[state.GetType()].State;
+            previousState?.OnExit();
+            nextState?.OnEnter();
+            transitionComplete = true;
+        }
         
-        previousState?.OnExit();
-        nextState?.OnEnter();
     }
 
     ITransition GetTransition()
