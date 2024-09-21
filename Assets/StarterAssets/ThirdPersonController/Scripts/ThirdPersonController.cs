@@ -1,4 +1,5 @@
-﻿ using UnityEngine;
+﻿ using Cinemachine;
+ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -122,7 +123,7 @@ namespace StarterAssets
             }
         }
 
-
+        private CinemachineVirtualCamera _playerVirtualCamera;
         private void Awake()
         {
             // get a reference to our main camera
@@ -130,10 +131,15 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            
+            _playerVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
         }
 
         private void Start()
         {
+            _playerVirtualCamera.m_LookAt = GameObject.FindGameObjectWithTag("CinemachineTarget").transform;
+            _playerVirtualCamera.m_Follow = GameObject.FindGameObjectWithTag("CinemachineTarget").transform;
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
