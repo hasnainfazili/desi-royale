@@ -42,7 +42,7 @@ These tasks must be completed while evading the mothers and their slipper attack
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/desi-royale.git
+   git clone https://github.com/hasnainfazili/desi-royale.git
    ```
 2. Follow the installation instructions for your platform (coming soon).
 3. Gather your friends, divide into teams, and prepare for the nostalgic chaos!
