@@ -1,4 +1,5 @@
 ﻿ using Cinemachine;
+ using Unity.Netcode;
  using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -13,7 +14,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : NetworkBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -100,15 +101,16 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
 
 #if ENABLE_INPUT_SYSTEM 
-        private PlayerInput _playerInput;
+        [SerializeField] PlayerInput _playerInput;
 #endif
+        private ThrowController _throwController;
         private Animator _animator;
         private CharacterController _controller;
         private StarterAssetsInputs _input;
-        private GameObject _mainCamera;
+        [SerializeField] private GameObject _mainCamera;
 
         private const float _threshold = 0.01f;
-
+        
         private bool _hasAnimator;
 
         private bool IsCurrentDeviceMouse
@@ -122,29 +124,22 @@ namespace StarterAssets
 #endif
             }
         }
-
-        private CinemachineVirtualCamera _playerVirtualCamera;
+        
+        [SerializeField] private CinemachineVirtualCamera _playerVirtualCamera;
+        [SerializeField] private AudioListener _playeraudioListener;
         private void Awake()
         {
             // get a reference to our main camera
-            if (_mainCamera == null)
-            {
-                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
-            
-            _playerVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
-        }
-
-        private void Start()
-        {
-            _playerVirtualCamera.m_LookAt = GameObject.FindGameObjectWithTag("CinemachineTarget").transform;
-            _playerVirtualCamera.m_Follow = GameObject.FindGameObjectWithTag("CinemachineTarget").transform;
-
+            // if (_mainCamera == null)
+            // {
+            //     _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            // }
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
+            _throwController = GetComponent<ThrowController>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -156,6 +151,25 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner)
+            {
+                _throwController.enabled = false;
+                _playeraudioListener.enabled = false;
+                _playerVirtualCamera.Priority = 0;
+                _playerInput.enabled = false;
+                return;
+            }
+            
+            
+            _throwController.enabled = true;
+            _playerVirtualCamera.Priority = 100;
+            _playeraudioListener.enabled = true;
+            _playerInput.enabled = true;
+
         }
 
         private void Update()
