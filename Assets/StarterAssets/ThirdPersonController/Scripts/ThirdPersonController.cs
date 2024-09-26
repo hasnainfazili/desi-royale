@@ -1,6 +1,9 @@
-﻿ using Cinemachine;
+﻿ using System;
+ using System.Collections.Generic;
+ using Cinemachine;
  using Unity.Netcode;
  using UnityEngine;
+ using Random = UnityEngine.Random;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -113,6 +116,35 @@ namespace StarterAssets
         
         private bool _hasAnimator;
 
+        public struct InputPayload : INetworkSerializable
+        {
+            public int tick;
+            public Vector3 inputVector;
+            public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+            {
+                serializer.SerializeValue(ref tick);
+                serializer.SerializeValue(ref inputVector);
+            }
+        }
+
+        public struct StatePayload : INetworkSerializable
+        {
+            public int tick;
+            public Vector3 position;
+            public Quaternion rotation;
+            public Vector3 velocity;
+            public Vector3 angularVelocity;
+
+            public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+            {
+                serializer.SerializeValue(ref tick);
+                serializer.SerializeValue(ref position);
+                serializer.SerializeValue(ref rotation);
+                serializer.SerializeValue(ref velocity);
+                serializer.SerializeValue(ref angularVelocity);
+
+            }
+        }
         private bool IsCurrentDeviceMouse
         {
             get
@@ -127,6 +159,22 @@ namespace StarterAssets
         
         [SerializeField] private CinemachineVirtualCamera _playerVirtualCamera;
         [SerializeField] private AudioListener _playeraudioListener;
+
+
+        private NetworkTimer timer;
+        private const float k_serverTickRate = 60f;
+        private const int k_bufferSize = 1024;
+
+
+        private CircularBuffer<StatePayload> clientStateBuffer;
+        private CircularBuffer<InputPayload> clientInputBuffer;
+        
+        StatePayload lastServerState;
+        private StatePayload lastProcessedState;
+        
+        CircularBuffer<StatePayload> serverStateBuffer;
+        Queue<InputPayload> serverInputQueue;
+        
         private void Awake()
         {
             // get a reference to our main camera
@@ -151,6 +199,16 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+
+            timer = new NetworkTimer(k_serverTickRate);
+            clientStateBuffer = new CircularBuffer<StatePayload>(k_bufferSize);
+            clientInputBuffer = new CircularBuffer<InputPayload>(k_bufferSize);
+
+            serverStateBuffer = new CircularBuffer<StatePayload>(k_bufferSize);
+            serverInputQueue = new Queue<InputPayload>();
+
+
         }
 
         public override void OnNetworkSpawn()
@@ -161,6 +219,7 @@ namespace StarterAssets
                 _playeraudioListener.enabled = false;
                 _playerVirtualCamera.Priority = 0;
                 _playerInput.enabled = false;
+                _animator.enabled = false;
                 return;
             }
             
@@ -169,16 +228,163 @@ namespace StarterAssets
             _playerVirtualCamera.Priority = 100;
             _playeraudioListener.enabled = true;
             _playerInput.enabled = true;
-
+            _animator.enabled = true;
         }
 
         private void Update()
         {
+            timer.Update(Time.deltaTime);
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
             GroundedCheck();
             Move();
+        }
+
+        private void FixedUpdate()
+        {
+            if (!IsOwner) return;
+
+            if (timer.ShouldTick())
+            {
+                HandleClientTick();
+                HandleServerTick();
+            }
+        }
+
+        void HandleServerTick()
+        {
+            var bufferIndex = -1;
+            while (serverInputQueue.Count > 0)
+            {
+                InputPayload inputPayload = serverInputQueue.Dequeue();
+
+                bufferIndex = inputPayload.tick % k_bufferSize;
+
+                StatePayload statePayload = SimulateMovement(inputPayload);
+                serverStateBuffer.Add(statePayload, bufferIndex);
+            }
+
+            if (bufferIndex == -1) return;
+            SendToClientRPC(serverStateBuffer.Get(bufferIndex));
+        }
+
+        StatePayload SimulateMovement(InputPayload inputPayload)
+        {
+            Physics.simulationMode = SimulationMode.Script;
+            
+            Move();
+            Physics.Simulate(Time.fixedDeltaTime);
+            Physics.simulationMode = SimulationMode.FixedUpdate;
+
+            return new StatePayload()
+            {
+                tick = inputPayload.tick,
+                position = transform.position,
+                rotation = transform.rotation,
+                velocity = _controller.velocity,
+
+            };
+        }
+        
+        [ClientRpc]
+        void SendToClientRPC(StatePayload statePayload)
+        {
+            if (!IsOwner) return;
+
+            lastServerState = statePayload;
+        }
+        void HandleClientTick()
+        {
+            if (!IsClient) return;
+            var currentTick = timer.CurrentTick;
+            var bufferIndex = currentTick % k_bufferSize;
+
+            InputPayload payload = new InputPayload()
+            {
+                tick = currentTick
+            };
+            
+            clientInputBuffer.Add(payload, bufferIndex);
+            SendToServerRPC(payload);
+
+            StatePayload statePayload = ProcessMovement(payload);
+            clientStateBuffer.Add(statePayload, bufferIndex);
+            
+            HandleServerReconciliation();
+        }
+
+        bool ShouldReconcile()
+        {
+            bool isNewServerState = !lastServerState.Equals(default);
+            bool isLastStateUndefinedorDifferent = lastProcessedState.Equals(default);
+
+            return isNewServerState && isLastStateUndefinedorDifferent;
+        }
+        
+        [SerializeField] private float reconciliationThreshold = 2f;
+        void HandleServerReconciliation()
+        {
+            if (!ShouldReconcile()) return;
+
+            float positionError;
+            int bufferIndex;
+            StatePayload rewindState = default;
+            
+            bufferIndex = lastServerState.tick % k_bufferSize;
+            if(bufferIndex - 1 > 0) return;
+            
+            rewindState = IsHost ? serverStateBuffer.Get(bufferIndex - 1) : lastServerState;
+            
+            positionError = Vector3.Distance(rewindState.position, clientStateBuffer.Get(bufferIndex).position);
+
+            if (positionError > reconciliationThreshold)
+            {
+                ReconcileState(rewindState);
+            }
+
+            lastProcessedState = lastServerState;
+        }
+
+        void ReconcileState(StatePayload rewindState)
+        {
+            transform.position = rewindState.position;
+            transform.rotation = rewindState.rotation;
+            // _controller. = rewindState.velocity;
+            
+            if(!rewindState.Equals(lastServerState)) return;
+            
+            clientStateBuffer.Add(rewindState, rewindState.tick);
+            
+            
+            int ticksToReplay = lastServerState.tick;
+
+            while (ticksToReplay < timer.CurrentTick)
+            {
+                int bufferIndex = ticksToReplay % k_bufferSize;
+                
+                StatePayload statePayload = ProcessMovement(clientInputBuffer.Get(bufferIndex));
+                clientStateBuffer.Add(statePayload, bufferIndex);
+                ticksToReplay++;
+                
+            }
+        }
+        [ServerRpc]
+        void SendToServerRPC(InputPayload inputPayload)
+        {
+            serverInputQueue.Enqueue(inputPayload);
+        }
+        StatePayload ProcessMovement(InputPayload input)
+        {
+            Move();
+
+            return new StatePayload()
+            {
+                tick = input.tick,
+                position = transform.position,
+                rotation = transform.rotation,
+                velocity = _controller.velocity
+            };
         }
 
         private void LateUpdate()
@@ -265,7 +471,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed / 100f, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // normalise input direction
@@ -284,12 +490,12 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
-
+    
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-
+            var tickRate = timer.MinTimeBetweenTicks / (1f / Time.deltaTime);
             // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            
+            _controller.Move(targetDirection.normalized * (_speed * tickRate) + new Vector3(0.0f, _verticalVelocity, 0.0f) * tickRate);
 
             // update animator if using character
             if (_hasAnimator)

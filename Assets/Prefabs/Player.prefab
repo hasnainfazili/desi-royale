@@ -2561,9 +2561,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
-  SprintSpeed: 5.335
-  RotationSmoothTime: 0.12
+  MoveSpeed: 200
+  SprintSpeed: 533.5
+  RotationSmoothTime: 0.002
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   FootstepAudioClips:
@@ -2577,8 +2577,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
-  FootstepAudioVolume: 0.3
-  JumpHeight: 1.2
+  FootstepAudioVolume: 1
+  JumpHeight: 3
   Gravity: -15
   JumpTimeout: 0.3
   FallTimeout: 0.15
@@ -2593,9 +2593,11 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  _playerInput: {fileID: 0}
   _mainCamera: {fileID: 1845144883151600245}
   _playerVirtualCamera: {fileID: 5005117168907392099}
   _playeraudioListener: {fileID: 874681150330761084}
+  reconciliationThreshold: 2
 --- !u!114 &2275294072041602191
 MonoBehaviour:
   m_ObjectHideFlags: 0
