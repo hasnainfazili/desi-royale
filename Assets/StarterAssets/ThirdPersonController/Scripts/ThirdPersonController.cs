@@ -1,4 +1,8 @@
-﻿ using UnityEngine;
+﻿ using Unity.VisualScripting;
+ using UnityEngine;
+ using System.Collections;
+ using System.Collections.Generic;
+ using UnityEngine.Jobs;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -155,7 +159,8 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
+            
+            TakeCover();
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -218,7 +223,7 @@ namespace StarterAssets
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's == operator uses approximation so is not floating point error-prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -387,6 +392,53 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        [SerializeField] private Transform HighCover;
+        [SerializeField] private Transform LowCover;
+        [SerializeField] private float maxCoverDistance = 3f;
+        [SerializeField] private LayerMask coverLayerMask;
+        [SerializeField] private bool isInCover = false;
+        // ReSharper disable Unity.PerformanceAnalysis
+        void TakeCover()
+        {
+            if (_input.cover && !isInCover)
+            {
+                var enterHigh = Physics.Raycast(HighCover.position, transform.forward, maxCoverDistance, coverLayerMask);
+                var enterLow = Physics.Raycast(LowCover.position, transform.forward,out RaycastHit hit, maxCoverDistance, coverLayerMask);
+                var moveDirection = hit.point - transform.position;
+                var moveToDirection = moveDirection.normalized * (MoveSpeed * Time.deltaTime);
+                StartCoroutine(MoveToCover(moveToDirection, hit.point));
+                //Enter high cover 
+                // Cover Animation
+                // Walk Animation
+                // if(isInCover && enterHigh && enterLow)
+            }
+
+            if (_input.cover && isInCover)
+            {
+                ExitCover();
+            }
+        }
+
+      
+
+        void ExitCover()
+        {
+            
+        }
+        
+        private IEnumerator MoveToCover(Vector3 coverDirection, Vector3 destination)
+        {
+            while (!isInCover)
+            {
+                if (Vector3.Distance(destination, transform.position) < 1f)
+                    isInCover = true;
+                _controller.Move(coverDirection);
+                _animator.SetFloat(_animIDSpeed, _speed);
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }
