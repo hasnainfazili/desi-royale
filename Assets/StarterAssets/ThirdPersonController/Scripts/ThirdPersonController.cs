@@ -107,6 +107,7 @@ namespace StarterAssets
         [SerializeField] PlayerInput _playerInput;
 #endif
         private ThrowController _throwController;
+        private PlayerInteraction _playerInteraction;
         private Animator _animator;
         private CharacterController _controller;
         private StarterAssetsInputs _input;
@@ -188,6 +189,7 @@ namespace StarterAssets
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
             _throwController = GetComponent<ThrowController>();
+            _playerInteraction = GetComponent<PlayerInteraction>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -220,6 +222,7 @@ namespace StarterAssets
                 _playerVirtualCamera.Priority = 0;
                 _playerInput.enabled = false;
                 _animator.enabled = false;
+                _playerInteraction.enabled = false;
                 return;
             }
             
@@ -228,6 +231,7 @@ namespace StarterAssets
             _playerVirtualCamera.Priority = 100;
             _playeraudioListener.enabled = true;
             _playerInput.enabled = true;
+            _playerInteraction.enabled = true;
             _animator.enabled = true;
         }
 
@@ -235,7 +239,8 @@ namespace StarterAssets
         {
             timer.Update(Time.deltaTime);
             _hasAnimator = TryGetComponent(out _animator);
-
+            if (_input.interact)
+                _playerInteraction.Interact();
             JumpAndGravity();
             GroundedCheck();
             Move();
