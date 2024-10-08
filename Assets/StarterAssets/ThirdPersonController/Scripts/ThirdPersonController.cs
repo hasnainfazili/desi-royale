@@ -402,30 +402,50 @@ namespace StarterAssets
         // ReSharper disable Unity.PerformanceAnalysis
         void TakeCover()
         {
+            if (_input.cover && isInCover)
+            {
+                ExitCover();
+            }
+            RaycastHit hit = new RaycastHit();
+            if (isInCover) return;
             if (_input.cover && !isInCover)
             {
                 var enterHigh = Physics.Raycast(HighCover.position, transform.forward, maxCoverDistance, coverLayerMask);
-                var enterLow = Physics.Raycast(LowCover.position, transform.forward,out RaycastHit hit, maxCoverDistance, coverLayerMask);
+                var enterLow = Physics.Raycast(LowCover.position, transform.forward,out hit, maxCoverDistance, coverLayerMask);
+                if(!enterHigh || !enterLow) return;
                 var moveDirection = hit.point - transform.position;
                 var moveToDirection = moveDirection.normalized * (MoveSpeed * Time.deltaTime);
-                StartCoroutine(MoveToCover(moveToDirection, hit.point));
+                
+                StartCoroutine(MoveToCover(moveToDirection, hit.point));            
                 //Enter high cover 
                 // Cover Animation
                 // Walk Animation
                 // if(isInCover && enterHigh && enterLow)
             }
 
-            if (_input.cover && isInCover)
+            if (hit.collider != null)
             {
-                ExitCover();
+                //Return x wil have a value and z will have a value
+                //Depending on which is returned we will lock the transform of the normal returned
+                if (hit.normal.x != 0)
+                {
+                    transform.position = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+                }
+                else if (hit.normal.z != 0)
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, hit.point.z);
+                }
             }
+            //Get the X and Z lengths of the cover and clamp the player to it
+            
+          
         }
 
       
 
         void ExitCover()
         {
-            
+            isInCover = false;
         }
         
         private IEnumerator MoveToCover(Vector3 coverDirection, Vector3 destination)
@@ -438,6 +458,8 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDSpeed, _speed);
                 yield return null;
             }
+            
+            
             yield return new WaitForSeconds(0.5f);
         }
     }
