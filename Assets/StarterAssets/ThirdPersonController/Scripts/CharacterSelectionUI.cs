@@ -6,8 +6,7 @@ using UnityEngine.UI;
 public class CharacterSelectionUI : MonoBehaviour
 {
     public GameObject characterPanelPrefab;
-
-    public GameObject activeCharacter;
+    public GameObject activeCharacterPanel;
     public void CreateCharacterUI(CharacterSO character)
     {
         Instantiate(characterPanelPrefab, transform);
@@ -15,8 +14,17 @@ public class CharacterSelectionUI : MonoBehaviour
         characterPanelPrefab.GetComponent<Image>().sprite = character.sprite;
     }
 
-    public void SetActiveCharacter(CharacterSO character)
+    public void OnHoverCharacter(CharacterSO character)
     {
-        // IDK Brain Done
+        activeCharacterPanel.GetComponentInChildren<TextMeshProUGUI>().text = character.characterName;
+        activeCharacterPanel.GetComponent<Image>().sprite = character.sprite;
+
     }
+    public void SelectCharacter(CharacterSO character)
+    {
+        activeCharacterPanel.GetComponentInChildren<TextMeshProUGUI>().text = character.characterName;
+        activeCharacterPanel.GetComponent<Image>().sprite = character.sprite;
+    }
+    
+    
 }

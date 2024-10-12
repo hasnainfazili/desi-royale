@@ -5,18 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cb72bd9-26d1-4eb2-96bd-62c874b15371" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/Character.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/Character.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelection.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelection.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelectionUI.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelectionUI.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterType.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/Player.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/Player.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.desi-royale/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.desi-royale/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scenes/Playground.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scenes/Playground.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelection.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelectionUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/CharacterSelectionUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StarterAssets/ThirdPersonController/Scripts/SceneController.cs.meta" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,6 +20,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../1.Thesis/Unity/ToE/Assets/Cleaner/Editor/ClassReferenceCollection.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -103,7 +101,7 @@
       <workItem from="1727456362856" duration="142000" />
       <workItem from="1727519469588" duration="163000" />
       <workItem from="1727519653722" duration="16213000" />
-      <workItem from="1728319886269" duration="17511000" />
+      <workItem from="1728319886269" duration="24915000" />
     </task>
     <servers />
   </component>
