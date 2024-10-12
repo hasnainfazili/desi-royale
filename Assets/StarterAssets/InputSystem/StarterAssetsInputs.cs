@@ -12,11 +12,8 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
-<<<<<<< HEAD
 		public bool interact;
-=======
 		public bool cover;
->>>>>>> cover-controller
 		[Header("Movement Settings")]
 		public bool analogMovement;
 
@@ -48,15 +45,14 @@ namespace StarterAssets
 			SprintInput(value.isPressed);
 		}
 
-<<<<<<< HEAD
 		public void OnInteract(InputValue value)
 		{
 			InteractInput(value.isPressed);
-=======
+		}
+
 		public void OnTakeCover(InputValue value)
 		{
 			TakeCoverInput(value.isPressed);
->>>>>>> cover-controller
 		}
 #endif
 
@@ -81,15 +77,14 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
-<<<<<<< HEAD
 		public void InteractInput(bool newInteractState)
 		{
 			interact = newInteractState;
-=======
+		}
+
 		public void TakeCoverInput(bool newTakeCoverState)
 		{
 			cover = newTakeCoverState;
->>>>>>> cover-controller
 		}
 		private void OnApplicationFocus(bool hasFocus)
 		{

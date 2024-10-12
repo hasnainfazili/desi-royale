@@ -1,17 +1,14 @@
-<<<<<<< HEAD
-﻿ using System;
+using System;
  using System.Collections.Generic;
  using Cinemachine;
  using Unity.Netcode;
  using UnityEngine;
  using Random = UnityEngine.Random;
-=======
-﻿ using Unity.VisualScripting;
+using Unity.VisualScripting;
  using UnityEngine;
  using System.Collections;
  using System.Collections.Generic;
  using UnityEngine.Jobs;
->>>>>>> cover-controller
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -247,13 +244,10 @@ namespace StarterAssets
         {
             timer.Update(Time.deltaTime);
             _hasAnimator = TryGetComponent(out _animator);
-<<<<<<< HEAD
             if (_input.interact)
                 _playerInteraction.Interact();
-=======
             
             TakeCover();
->>>>>>> cover-controller
             JumpAndGravity();
             GroundedCheck();
             Move();
