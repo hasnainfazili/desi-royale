@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 ﻿ using System;
  using System.Collections.Generic;
  using Cinemachine;
  using Unity.Netcode;
  using UnityEngine;
  using Random = UnityEngine.Random;
+=======
+﻿ using Unity.VisualScripting;
+ using UnityEngine;
+ using System.Collections;
+ using System.Collections.Generic;
+ using UnityEngine.Jobs;
+>>>>>>> cover-controller
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -239,8 +247,13 @@ namespace StarterAssets
         {
             timer.Update(Time.deltaTime);
             _hasAnimator = TryGetComponent(out _animator);
+<<<<<<< HEAD
             if (_input.interact)
                 _playerInteraction.Interact();
+=======
+            
+            TakeCover();
+>>>>>>> cover-controller
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -449,7 +462,7 @@ namespace StarterAssets
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
+            // note: Vector2's == operator uses approximation so is not floating point error-prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -618,6 +631,75 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        [SerializeField] private Transform HighCover;
+        [SerializeField] private Transform LowCover;
+        [SerializeField] private float maxCoverDistance = 3f;
+        [SerializeField] private LayerMask coverLayerMask;
+        [SerializeField] private bool isInCover = false;
+        // ReSharper disable Unity.PerformanceAnalysis
+        void TakeCover()
+        {
+            if (_input.cover && isInCover)
+            {
+                ExitCover();
+            }
+            RaycastHit hit = new RaycastHit();
+            if (isInCover) return;
+            if (_input.cover && !isInCover)
+            {
+                var enterHigh = Physics.Raycast(HighCover.position, transform.forward, maxCoverDistance, coverLayerMask);
+                var enterLow = Physics.Raycast(LowCover.position, transform.forward,out hit, maxCoverDistance, coverLayerMask);
+                if(!enterHigh || !enterLow) return;
+                var moveDirection = hit.point - transform.position;
+                var moveToDirection = moveDirection.normalized * (MoveSpeed * Time.deltaTime);
+                
+                StartCoroutine(MoveToCover(moveToDirection, hit.point));            
+                //Enter high cover 
+                // Cover Animation
+                // Walk Animation
+                // if(isInCover && enterHigh && enterLow)
+            }
+
+            if (hit.collider != null)
+            {
+                //Return x wil have a value and z will have a value
+                //Depending on which is returned we will lock the transform of the normal returned
+                if (hit.normal.x != 0)
+                {
+                    transform.position = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+                }
+                else if (hit.normal.z != 0)
+                {
+                    transform.position = new Vector3(transform.position.x, transform.position.y, hit.point.z);
+                }
+            }
+            //Get the X and Z lengths of the cover and clamp the player to it
+            
+          
+        }
+
+      
+
+        void ExitCover()
+        {
+            isInCover = false;
+        }
+        
+        private IEnumerator MoveToCover(Vector3 coverDirection, Vector3 destination)
+        {
+            while (!isInCover)
+            {
+                if (Vector3.Distance(destination, transform.position) < 1f)
+                    isInCover = true;
+                _controller.Move(coverDirection);
+                _animator.SetFloat(_animIDSpeed, _speed);
+                yield return null;
+            }
+            
+            
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

@@ -42,6 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
+<<<<<<< HEAD
                     "name": "Interact",
                     "type": "Value",
                     "id": "d328f74e-ce2b-469c-ba32-6b406b27fb43",
@@ -49,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+=======
+                    "name": "TakeCover",
+                    "type": "PassThrough",
+                    "id": "eb9569c2-4c84-45ba-a310-1d5b1aaeb676",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+>>>>>>> cover-controller
                 }
             ],
             "bindings": [
@@ -230,12 +240,21 @@
                 },
                 {
                     "name": "",
+<<<<<<< HEAD
                     "id": "a0181c84-538f-464c-bdac-1e9629d3514a",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "KeyboardMouse",
                     "action": "Interact",
+=======
+                    "id": "a8d53f54-f075-47d5-9ccf-7f5daa795611",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyboardMouse",
+                    "action": "TakeCover",
+>>>>>>> cover-controller
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
