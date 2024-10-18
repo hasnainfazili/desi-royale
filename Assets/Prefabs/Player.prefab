@@ -442,7 +442,7 @@ GameObject:
   - component: {fileID: 4616197458916394281}
   m_Layer: 3
   m_Name: PlayerCamera
-  m_TagString: Untagged
+  m_TagString: PlayerCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3048,6 +3048,7 @@ GameObject:
   - component: {fileID: -631526153945990296}
   - component: {fileID: 6848780226852175316}
   - component: {fileID: 8316016397441695261}
+  - component: {fileID: 4844853810868684964}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -3135,7 +3136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1547511025
+  GlobalObjectIdHash: 226512973
   InScenePlacedSourceGlobalObjectIdHash: 2840344525
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -3193,6 +3194,13 @@ MonoBehaviour:
   _playerVirtualCamera: {fileID: 5005117168907392099}
   _playeraudioListener: {fileID: 874681150330761084}
   reconciliationThreshold: 2
+  HighCover: {fileID: 0}
+  LowCover: {fileID: 0}
+  maxCoverDistance: 3
+  coverLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  isInCover: 0
 --- !u!114 &2275294072041602191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3227,6 +3235,7 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   interact: 0
+  cover: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -3242,7 +3251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 4419d82f33d36e848b3ed5af4c8da37e,
+  m_Actions: {fileID: -944628639613478452, guid: af43e2cacb5cd5746a9c477b2788d522,
     type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
@@ -3366,9 +3375,9 @@ MonoBehaviour:
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
-  SyncRotAngleX: 1
+  SyncRotAngleX: 0
   SyncRotAngleY: 1
-  SyncRotAngleZ: 1
+  SyncRotAngleZ: 0
   SyncScaleX: 0
   SyncScaleY: 0
   SyncScaleZ: 0
@@ -3410,6 +3419,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactPanel: {fileID: 755210048227492283}
   interactText: {fileID: 8826411951951791568}
+--- !u!114 &4844853810868684964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7382236888820698730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 581235f61e40466ab2341d974cea3022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 1
+    OriginatingState: -1031906032
+    DestinationState: -1440814732
+    TransitionDuration: 0.25
+    TriggerNameHash: -1473092131
+    TransitionIndex: 0
+  m_Animator: {fileID: 510032865576193190}
 --- !u!1 &7575230087989173737
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,9 +15,9 @@ public class InteractionUI : MonoBehaviour
 
     private void Update()
     {
-        if (_playerInteraction.CanInteract && _playerInteraction._closestInteractable != null)
+        if (_playerInteraction.GetClosestInteractable() != null)
         {
-            Show();
+            Show(_playerInteraction.GetClosestInteractable());
         }
         else
         {
@@ -25,11 +25,11 @@ public class InteractionUI : MonoBehaviour
         }
     }
 
-    private void Show()
+    private void Show(IInteractable interactable)
     {
         interactPanel.SetActive(true);
         
-        interactText.SetText("Press E to " + _playerInteraction._closestInteractable.GetName());
+        interactText.SetText("Press E to " + _playerInteraction.GetClosestInteractable().GetName());
         interactText.gameObject.SetActive(true);
     }
 

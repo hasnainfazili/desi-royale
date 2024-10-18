@@ -29,6 +29,7 @@ public class ThrowController : MonoBehaviour
     [Range(.01f,.25f)]
     private float timeBetweenPoints;
 
+    private Camera playerCamera;
 
     // Reset the throwable back to release position
     private Transform _initialParent;
@@ -37,7 +38,7 @@ public class ThrowController : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-
+        playerCamera = GameObject.FindGameObjectWithTag("PlayerCamera").GetComponent<Camera>();
 
         _initialParent = currentThrowableEquipped.transform.parent;
         _initialRotation = currentThrowableEquipped.transform.localRotation;
@@ -52,7 +53,7 @@ public class ThrowController : MonoBehaviour
             currentThrowableEquipped.gameObject.SetActive(true);
             _animator.transform.rotation = Quaternion.Euler(
                 _animator.transform.eulerAngles.x,
-                Camera.main.transform.rotation.eulerAngles.y,
+                playerCamera.transform.rotation.eulerAngles.y,
                 _animator.transform.eulerAngles.z
             );
             DrawProjection();
@@ -73,7 +74,7 @@ public class ThrowController : MonoBehaviour
         lineRenderer.enabled = true;
         lineRenderer.positionCount = Mathf.CeilToInt(linePoints / timeBetweenPoints) + 1;
         var startPosition = _releaseTransform.position;
-        var startVelocity = ThrowStrength * Camera.main.transform.forward / currentThrowableEquipped.mass;
+        var startVelocity = ThrowStrength * playerCamera.transform.forward / currentThrowableEquipped.mass;
         int i = 0;
         lineRenderer.SetPosition(i, startPosition);
         for (float time = 0; time < linePoints; time += timeBetweenPoints)
@@ -104,7 +105,7 @@ public class ThrowController : MonoBehaviour
         currentThrowableEquipped.isKinematic = false;
         currentThrowableEquipped.freezeRotation = false;
         currentThrowableEquipped.transform.SetParent(null, true);
-        currentThrowableEquipped.AddForce(Camera.main.transform.forward * ThrowStrength, ForceMode.Impulse);
+        currentThrowableEquipped.AddForce(playerCamera.transform.forward * ThrowStrength, ForceMode.Impulse);
 
         SoundFXManager.instance.PlaySingleSoundFXClip(ThrowAudioClip, transform, .4f);
         StartCoroutine(ResetThrowable());

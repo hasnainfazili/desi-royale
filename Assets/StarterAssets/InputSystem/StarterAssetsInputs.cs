@@ -14,6 +14,7 @@ namespace StarterAssets
 		public bool sprint;
 		public bool interact;
 		public bool cover;
+		
 		[Header("Movement Settings")]
 		public bool analogMovement;
 

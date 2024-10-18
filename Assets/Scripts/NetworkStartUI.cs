@@ -20,6 +20,7 @@ public class NetworkStartUI : MonoBehaviour
         Debug.Log("Starting Host");
         
         NetworkManager.Singleton.StartHost();
+        // StartOrJoinGame();
         Hide();
     }
 
@@ -28,9 +29,12 @@ public class NetworkStartUI : MonoBehaviour
         Debug.Log("Starting Client");
         
         NetworkManager.Singleton.StartClient();
+        // StartOrJoinGame();
         Hide();
     }
 
 
     private void Hide() => gameObject.SetActive(false);
+
+    private void StartOrJoinGame() => StartCoroutine(SceneController.instance.LoadScene("GameMode"));
 }

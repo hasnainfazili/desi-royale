@@ -25,14 +25,15 @@ public class SceneController : MonoBehaviour
         while(!operation.isDone)
         {
             _loadingScreen.SetActive(true);
-            //GameObjectLoading + animatino
+            //GameObjectLoading + animation
             // loadingScreen.SetTrigger("LoadingOn");
             // progress
             yield return null;
         }
         //play animation for transition
-        yield return new WaitForSecondsRealtime(1f);
+        _loadingScreen.SetActive(false);
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+        yield return new WaitForSecondsRealtime(1f);
 
         // if(loadingScreenAnimator != null)
             // loadingScreenAnimator.SetTrigger("LoadingOff");
